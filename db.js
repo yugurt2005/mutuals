@@ -1,4 +1,4 @@
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, addDoc, setDoc, deleteDoc, collection } from "firebase/firestore";
 
 import db from "./firestore.js";
 
@@ -16,15 +16,20 @@ const nodeConverter = {
   },
 };
 
+const nodeCollection = collection(db, "nodes").withConverter(nodeConverter);
+
 export const getAllNodes = async () => {
-  const nodes = await getDocs(
-    collection(db, "nodes").withConverter(nodeConverter)
-  );
-  return nodes.docs.map((doc) => doc.data());
+  return await getDocs(nodeCollection).docs.map((doc) => doc.data());
 };
 
-export const createNode = async () => {};
+export const addNode = async (node) => {
+  await addDoc(nodeCollection, node);
+};
 
-export const updateNode = async () => {};
+export const setNode = async (node) => {
+  await setDoc(nodeCollection, node);
+};
 
-export const deleteNode = async () => {};
+export const deleteNode = async (id) => {
+  await deleteDoc(nodeCollection, id);
+};
