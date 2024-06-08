@@ -1,4 +1,4 @@
-export class Node {
+export default class Node {
     constructor(id) {
         this.id = id;
     }
@@ -16,17 +16,5 @@ export class Node {
     }
 
     setName(name) {
-    }
-}
-
-const nodeConverter = {
-    toFirestore: function(node) {
-        return {
-            id: node.id
-        }
-    },
-    fromFirestore: function(snapshot, options) {
-        const data = snapshot.data(options);
-        return new Node(data.id);
     }
 }
