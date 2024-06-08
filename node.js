@@ -9,6 +9,8 @@ export default class Node {
     }
 
     removeFriend(friend) {
+        const index = this.friends.indexOf(friend);
+        this.friends.splice(index, 1);
     }
 
     addInterest(interest) {
