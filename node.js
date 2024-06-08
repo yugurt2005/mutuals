@@ -1,5 +1,6 @@
+import db from './firestore';
 
-class Node {
+export class Node {
     constructor(id) {
         this.id = id;
     }
@@ -30,4 +31,16 @@ const nodeConverter = {
         const data = snapshot.data(options);
         return new Node(data.id);
     }
+}
+
+export const createNode = async () => {
+}
+
+export const readNode = async () => {
+}
+
+export const updateNode = async () => {
+}
+
+export const deleteNode = async () => {
 }
