@@ -42,7 +42,7 @@ export const removeFriend = (req, res) => {
     
     const node = nodes.get(nodeID);
 
-    if (!friends.has(friendID)) {
+    if (!node.friends.has(friendID)) {
         res.status(400).send('Friend is not in friends list');
         return;
     }
@@ -50,3 +50,4 @@ export const removeFriend = (req, res) => {
     node.removeFriend(friendID);
     res.send("Success!");
 }
+

@@ -1,24 +1,35 @@
 export default class Node {
-    constructor(id) {
-        this.id = id;
-        this.friends = []; // list of numbers for friend IDs
-    }
+  constructor(id, name=undefined) {
+    this.id = id;
 
-    addFriend(friend) {
-        this.friends.push(friend);
-    }
+    this.name = name;
 
-    removeFriend(friend) {
-        const index = this.friends.indexOf(friend);
-        this.friends.splice(index, 1);
-    }
+    this.friends = [];
+    this.invites = [];
+    this.interests = [];
+  }
 
-    addInterest(interest) {
-    }
+  addFriend(friend) {
+    this.friends.push(friend);
+  }
 
-    removeInterest(interest) {
-    }
+  removeFriend(friend) {
+    const index = this.friends.indexOf(friend);
+    this.friends.splice(index, 1);
+  }
 
-    setName(name) {
-    }
+  addInvite(invite) {
+    this.invites.push(invite);
+  }
+
+  removeInvite(invite) {
+    const index = this.invites.indexOf(invite);
+    this.invites.splice(index, 1);
+  }
+
+  addInterest(interest) {}
+
+  removeInterest(interest) {}
+
+  setName(name) {}
 }
