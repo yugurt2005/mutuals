@@ -1,4 +1,18 @@
-const nodes = new Map();
+import { v4 as uuidv4 } from 'uuid';
+
+const nodes = new Map(); // id (uuidv4), node (class)
+
+export const addNode = (req, res) => {
+    const name = req.body.name;
+    if (name === undefined || typeof name !== "string" || name.length === 0) {
+        res.status(400).send('"name" was empty or invalid.');
+        return;
+    }
+    
+    const id = uuidv4();
+    const node = new Node(id, name);
+    nodes.set(id, node);
+};
 
 export const addFriend = (req, res) => {
     const friendID = req.body.friendID;

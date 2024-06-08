@@ -35,7 +35,4 @@ export default class Node {
         const index = this.interests.indexOf(interest);
         this.interests.splice(index, 1);
     }
-    
-    setName(name) {}
 }
-    
