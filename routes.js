@@ -1,6 +1,7 @@
 import { getAllNodes } from "./db";
 
 const nodes = new Map();
+import { v4 as uuidv4 } from 'uuid';
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -103,6 +104,43 @@ export const removeFriend = (req, res) => {
     return;
   }
 
-  node.removeFriend(friendID);
-  res.send("Success!");
+
+    if (!nodes.has(nodeID) || !nodes.has(interest)) {
+        res.status(400).send('Nodes does not contain id.');
+        return;
+    }
+
+    const node = nodes.get(nodeID);
+    node.addInterest(interest);
+
+    res.send("Success!");
 };
+
+export const removeInterest = (req, res) => {
+    const interest = req.body.interest;
+    const nodeID = req.body.nodeID;
+    if (interest === undefined || !isFinite(interest)) {
+        res.status(400).send('Requirement argument "interest" was missing.');
+        return;
+    }
+    if (nodeID === undefined || !isFinite(nodeID)) {
+        res.status(400).send('Requirement argument "nodeID" was missing.');
+        return;
+    }
+
+    if (!nodes.has(nodeID) || !nodes.has(interest)) {
+        res.status(400).send('Nodes does not contain id.');
+        return;
+    }
+
+    const node = nodes.get(nodeID);
+
+    if (!node.interests.has(friendID)) {
+        res.status(400).send('Interest is not in interests list');
+        return;
+    }
+    node.removeInterest(interest);
+
+    res.send("Success!");
+};
+
