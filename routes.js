@@ -1,7 +1,7 @@
 import { getAllNodes } from "./db";
+import { v4 as uuidv4 } from 'uuid';
 
 const nodes = new Map();
-import { v4 as uuidv4 } from 'uuid';
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -11,53 +11,85 @@ const shuffle = (array) => {
   return array;
 };
 
-const generateLocalGroup = (id) => {
-  let localGroup = new Set();
-  const node = nodes.get(id);
-  for (const friend1 of node.friends) {
-    const node1 = nodes.get(friend1);
-    localGroup.add(friend1);
-    for (const friend2 of node1.friends) {
-      localGroup.add(friend2);
+const checkClique = (ids) => {
+  for (const id1 of ids) {
+    for (const id2 of ids) {
+      if (nodes.get(id1).friends.includes(id2)) {
+        return false;
+      }
     }
   }
-  return localGroup.values();
+  return true;
+}
+
+const findClique = (id, cliqueSize) => {
+  for (let k = 0; i < 20; i++) {
+    const friends = nodes.get(id).friends;
+    const ids = [];
+    for (let i = 0; i < cliqueSize; i++) {
+      const index = Math.floor(Math.random() * (i + 1));
+      const id = friends[index];
+      if (ids.includes(id)) {
+        i--;
+      } else {
+        ids.push(id);
+      }
+    }
+
+    if (checkClique(ids)) {
+      return ids;
+    }
+  }
+  return undefined;
 };
 
-const isSubset = (a, b) => { // is a subset of b
-    return true;
-}
+const createGroup = (id, cliqueSize, groupSize) => {
+  const cliqueIds = findClique(id, cliqueSize);
+  const group = new Set();
+  for (const id of cliqueIds) {
+    nodes[id].friends.forEach(item => group.add(item));
+  }
 
-const generateClique = (id, size) => {
-    const localGroup = generateLocalGroup(id); // TODO store as a property you don't have to call this function at all
-    for (let i = 0; i < 20; i++) {
-        const shuffled = shuffle(localGroup);
-        const curr = [nodes.get(id)];
-        for (const node of shuffled) {
-            const nodeLocalGroup = generateLocalGroup(node.id);
-            if (isSubset(curr, nodeLocalGroup)) {
-                curr.push(node.id);
-                if (curr.length >= size) {
-                    return curr;
-                }
-            }
-        }
+  shuffle(group);
+  result = [];
+  group.forEach((item, _set) => {
+    let count = 0;
+    for (const id of cliqueIds) {
+      if (item.friends.includes[id]) {
+        count++;
+      }
     }
-    return shuffle(localGroup).slice(0, size);
-}
+    if (count < cliqueIds.length) {
+      result.append(item);
+      if (result.length === groupSize) {
+        return;
+      }
+    }
+  });
+
+  result.push(...cliqueIds);
+  return result;
+};
+
 
 export const queryGroup = (req, res) => {
+  const id = req.query.id;
+  if (id === undefined || typeof id !== "string" || !nodes.has(id)) {
+    res.status(400).send('Required argument "id" was missing.');
+  }
+
   const dbNodes = getAllNodes();
   for (const node of dbNodes) {
     nodes.set(node.id, node);
   }
 
-  const id = req.body.id;
-  const size = req.body.size;
-  return generateClique(id, size);
+  const cliqueSize = req.query.cliqueSize;
+  const groupSize = req.query.groupSize;
+  const group = createGroup(id, cliqueSize, groupSize);
+  res.status(200).send(JSON.stringify(group));
 };
 
-export const addFriend = (req, res) => {
+/*export const addFriend = (req, res) => {
   const friendID = req.body.friendID;
   const nodeID = req.body.nodeID;
   if (friendID === undefined || !isFinite(friendID)) {
@@ -142,5 +174,4 @@ export const removeInterest = (req, res) => {
     node.removeInterest(interest);
 
     res.send("Success!");
-};
-
+};*/
